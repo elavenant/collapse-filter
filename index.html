@@ -1,0 +1,150 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<link href="css/slide-menu.css" rel="stylesheet">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script type="text/javascript" src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+<script src="js/slide-menu.js"></script>
+
+
+<style>
+    body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+    body {font-size:16px;}
+    .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+    .w3-half img:hover{opacity:1}
+    .color-grey {text-decoration-color: #5a6268}
+</style>
+
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-black w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+    <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
+    <div class="w3-container">
+        <h3 class="w3-padding-64"><b>Company<br>Name</b></h3>
+    </div>
+    <div class="w3-bar-block">
+        <a href="#"  class="w3-bar-item w3-button w3-hover-white">Home</a>
+        <a href="#showcase"  class="w3-bar-item w3-button w3-hover-white">Dashboards</a>
+        <a href="#services"  class="w3-bar-item w3-button w3-hover-white">Services</a>
+        <a href="#designers"  class="w3-bar-item w3-button w3-hover-white">Designers</a>
+        <a href="#packages"  class="w3-bar-item w3-button w3-hover-white">Packages</a>
+        <a href="#contact"  class="w3-bar-item w3-button w3-hover-white">Contact</a>
+    </div>
+</nav>
+
+<!-- Top menu on small screens -->
+<header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
+    <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">☰</a>
+    <span>Company Name</span>
+</header>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large"  style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+    <!-- Header -->
+    <div class="w3-container" style="margin-top:80px" id="showcase">
+        <h1 class="w3-jumbo"><b>Demo</b></h1>
+        <hr style="width:50px;border:5px solid #030000" class="w3-round">
+    </div>
+
+    <div class="header">
+        <div class="container">
+            <!-- Navigation Menu Start -->
+            <div class="navigation">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class ="color-grey">Choose the year</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class ="color-grey">Choose the zone</div>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select id = "year" class="js-example-responsive" style="width: 75%" name="Year">
+                            <option value="2010">2010</option>
+                            <option value="2011">2011</option>
+                            <option value="2012">2012</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select id = "basin" class="js-example-responsive" style="width: 75%" name="Basin">
+                            <option value="Atlantic">Atlantic</option>
+                            <option value="West Pacific">West Pacific</option>
+                            <option value="East Pacific">East Pacific</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class ="color-grey"></div>
+                        <button class = "search_button" onclick="refreshGraph();">search</button>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    <!-- Navigation menu end -->
+
+    <div class="menu-btn">
+        <a  href="#">Filtres <i class="fa fa-chevron-down"></i></a>
+    </div>
+    <div style="height: 50px;"></div>
+    <div id = "dashboard" >
+        <div class="container" >
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+
+var viz;
+
+$(document).ready(function () {
+
+    $(".js-example-responsive").select2({
+        width: 'resolve' // need to override the changed default
+    });
+
+    var containerDiv = document.getElementById("dashboard"),
+        url = "http://public.tableau.com/views/RegionalSampleWorkbook/Storms",
+        options = {
+            hideTabs: true,
+            onFirstInteractive: function () {
+                console.log("Run this code when the viz has finished loading.");
+            }
+        };
+
+    viz = new tableau.Viz(containerDiv, url, options);
+
+    });
+
+function switchFilter(filterName, values) {
+    var workSheets = viz.getWorkbook().getActiveSheet().getWorksheets();
+    for (let i =0;i<workSheets.length;i++){
+        workSheets[i].applyFilterAsync(filterName, values,tableau.FilterUpdateType.REPLACE);
+    }
+}
+function refreshGraph(){
+
+    var year = document.getElementById('year').value;
+    var zone = document.getElementById('basin').value;
+
+    switchFilter("YEAR(Date)",year);
+    switchFilter("Basin",zone);
+
+}
+</script>
